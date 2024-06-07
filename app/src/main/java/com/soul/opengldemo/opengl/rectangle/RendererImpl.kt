@@ -1,11 +1,12 @@
-package com.soul.opengldemo.opengl
+package com.soul.opengldemo.opengl.rectangle
 
 import android.content.Context
 import android.opengl.GLES20
 import android.opengl.GLSurfaceView
-import com.soul.lib.Global
 import com.soul.lib.utils.LogUtil
 import com.soul.opengldemo.R
+import com.soul.opengldemo.opengl.ReadResouceText
+import com.soul.opengldemo.opengl.ShaderHelper
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer

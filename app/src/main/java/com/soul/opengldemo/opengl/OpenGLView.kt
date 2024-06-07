@@ -15,12 +15,12 @@ import com.soul.lib.utils.LogUtil
  * UpdateRemark:
  */
 @Composable
-fun OpenGLView(context: Context) {
+fun OpenGLView(context: Context, renderer: GLSurfaceView.Renderer) {
     AndroidView(
         factory = { ctx ->
             GLSurfaceView(ctx).apply {
                 setEGLContextClientVersion(2) // 使用 OpenGL ES 2.0
-                setRenderer(RendererImpl(ctx))
+                setRenderer(renderer)
                 renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
             }
         },
