@@ -26,7 +26,10 @@
         </activity>
 
         <activity
-            android:name=".opengl.rectangle.OpenGLDrawLineAndRectangle"
+            android:name=".opengl.rectangle.GLDrawRectangleActivity"
+            android:exported="false" />
+        <activity
+            android:name=".opengl.growthcolor.GLGrowthColorActivity"
             android:exported="false" />
     </application>
 

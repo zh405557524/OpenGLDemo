@@ -14,7 +14,7 @@ import com.soul.opengldemo.opengl.OpenGLView
  * UpdateDate: 2024/6/7 11:22
  * UpdateRemark:
  */
-class OpenGLDrawLineAndRectangle : ComponentActivity() {
+class GLDrawRectangleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

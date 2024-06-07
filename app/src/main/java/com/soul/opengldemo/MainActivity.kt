@@ -18,7 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soul.lib.utils.LogUtil
-import com.soul.opengldemo.opengl.rectangle.OpenGLDrawLineAndRectangle
+import com.soul.opengldemo.opengl.growthcolor.GLGrowthColorActivity
+import com.soul.opengldemo.opengl.rectangle.GLDrawRectangleActivity
 import com.soul.opengldemo.ui.theme.OpenGlDemoTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,10 +45,11 @@ class MainActivity : ComponentActivity() {
                 // 每个按钮执行不同的操作
                 ButtonWithAction("OpenGL 点、线、面的制作") {
                     LogUtil.i(TAG, "按钮 1")
-                    startActivity(Intent(this@MainActivity, OpenGLDrawLineAndRectangle::class.java))
+                    startActivity(Intent(this@MainActivity, GLDrawRectangleActivity::class.java))
                 }
-                ButtonWithAction("按钮 2") {
+                ButtonWithAction("OpenGL 颜色调整") {
                     LogUtil.i(TAG, "按钮 2")
+                    startActivity(Intent(this@MainActivity, GLGrowthColorActivity::class.java))
                 }
                 ButtonWithAction("按钮 3") {
                     LogUtil.i(TAG, "按钮 3")
