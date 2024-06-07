@@ -103,9 +103,6 @@ class RatioSizeRendererImpl(val context: Context) : GLSurfaceView.Renderer {
         } else {
             Matrix.orthoM(mProjectionMatrix, 0, -1f, 1f, -a, a, -1f, 1f)
         }
-
-
-
     }
 
     override fun onDrawFrame(gl: GL10?) {
@@ -176,7 +173,8 @@ class RatioSizeRendererImpl(val context: Context) : GLSurfaceView.Renderer {
         LogUtil.i(TAG, "drawOpenGl")
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
 
-        GLES20.glUniformMatrix4fv(u_matrix,1,false,mProjectionMatrix,0);
+        //设置矩阵
+        GLES20.glUniformMatrix4fv(u_matrix, 1, false, mProjectionMatrix, 0);
 
         //绘制长方形
         //指定着色器u_color的颜色为白色

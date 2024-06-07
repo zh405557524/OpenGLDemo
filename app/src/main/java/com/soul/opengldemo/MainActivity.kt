@@ -22,6 +22,7 @@ import com.soul.opengldemo.opengl.growthcolor.GLGrowthColorActivity
 import com.soul.opengldemo.opengl.introduction3d.Introduction3dActivity
 import com.soul.opengldemo.opengl.ratiosize.GLRatioSizeActivity
 import com.soul.opengldemo.opengl.rectangle.GLDrawRectangleActivity
+import com.soul.opengldemo.opengl.texture.OpenGLTextureUseActivity
 import com.soul.opengldemo.ui.theme.OpenGlDemoTheme
 
 class MainActivity : ComponentActivity() {
@@ -60,6 +61,10 @@ class MainActivity : ComponentActivity() {
                 ButtonWithAction("OpenGL 三维入门") {
                     LogUtil.i(TAG, "按钮 4")
                     startActivity(Intent(this@MainActivity, Introduction3dActivity::class.java))
+                }
+                ButtonWithAction("OpenGL 使用纹理") {
+                    LogUtil.i(TAG, "按钮 5")
+                    startActivity(Intent(this@MainActivity, OpenGLTextureUseActivity::class.java))
                 }
             }
         }

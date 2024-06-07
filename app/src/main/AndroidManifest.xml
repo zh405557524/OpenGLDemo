@@ -37,6 +37,9 @@
         <activity
             android:name=".opengl.introduction3d.Introduction3dActivity"
             android:exported="false" />
+        <activity
+            android:name=".opengl.texture.OpenGLTextureUseActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

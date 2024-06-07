@@ -1,6 +1,9 @@
 package com.soul.opengldemo.opengl
 
+import android.content.Context
+import android.graphics.BitmapFactory
 import android.opengl.GLES20
+import android.opengl.GLUtils
 import android.util.Log
 
 /**
@@ -89,6 +92,24 @@ class ShaderHelper {
 
             return validateStatus[0] != 0
         }
+
+
+        fun buildProgram(vertex_shader_source: String, fragment_shader_source: String): Int {
+            //编译着色器源码
+            val mVertexshader = ShaderHelper.compileShader(GLES20.GL_VERTEX_SHADER, vertex_shader_source);
+            val mFragmentshader = ShaderHelper.compileShader(GLES20.GL_FRAGMENT_SHADER, fragment_shader_source);
+
+            //链接
+            val program = ShaderHelper.linkProgram(mVertexshader, mFragmentshader);
+            //验证opengl对象
+            ShaderHelper.validateProgram(program);
+//            //使用程序
+//            GLES20.glUseProgram(program);
+            return program
+        }
+
+
+
     }
 
 }
