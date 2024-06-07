@@ -34,6 +34,9 @@
         <activity
             android:name=".opengl.ratiosize.GLRatioSizeActivity"
             android:exported="false" />
+        <activity
+            android:name=".opengl.introduction3d.Introduction3dActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
