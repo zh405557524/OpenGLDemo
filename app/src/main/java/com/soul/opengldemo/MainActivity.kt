@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soul.lib.utils.LogUtil
 import com.soul.opengldemo.opengl.growthcolor.GLGrowthColorActivity
+import com.soul.opengldemo.opengl.ratiosize.GLRatioSizeActivity
 import com.soul.opengldemo.opengl.rectangle.GLDrawRectangleActivity
 import com.soul.opengldemo.ui.theme.OpenGlDemoTheme
 
@@ -51,8 +52,9 @@ class MainActivity : ComponentActivity() {
                     LogUtil.i(TAG, "按钮 2")
                     startActivity(Intent(this@MainActivity, GLGrowthColorActivity::class.java))
                 }
-                ButtonWithAction("按钮 3") {
+                ButtonWithAction("OpenGL 宽高比例调整") {
                     LogUtil.i(TAG, "按钮 3")
+                    startActivity(Intent(this@MainActivity, GLRatioSizeActivity::class.java))
                 }
             }
         }
