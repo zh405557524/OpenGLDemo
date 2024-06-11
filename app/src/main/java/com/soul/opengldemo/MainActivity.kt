@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soul.lib.utils.LogUtil
+import com.soul.opengldemo.opengl.body.CreateBodyActivity
 import com.soul.opengldemo.opengl.growthcolor.GLGrowthColorActivity
 import com.soul.opengldemo.opengl.introduction3d.Introduction3dActivity
 import com.soul.opengldemo.opengl.ratiosize.GLRatioSizeActivity
@@ -65,6 +66,10 @@ class MainActivity : ComponentActivity() {
                 ButtonWithAction("OpenGL 使用纹理") {
                     LogUtil.i(TAG, "按钮 5")
                     startActivity(Intent(this@MainActivity, OpenGLTextureUseActivity::class.java))
+                }
+                ButtonWithAction("OpenGL 构造物") {
+                    LogUtil.i(TAG, "按钮 6")
+                    startActivity(Intent(this@MainActivity, CreateBodyActivity::class.java))
                 }
             }
         }

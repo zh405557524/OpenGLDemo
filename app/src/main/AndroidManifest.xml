@@ -40,6 +40,9 @@
         <activity
             android:name=".opengl.texture.OpenGLTextureUseActivity"
             android:exported="false" />
+        <activity
+            android:name=".opengl.body.CreateBodyActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

@@ -97,7 +97,7 @@ class RendererImpl(val context: Context) : GLSurfaceView.Renderer {
 
     private fun initOpenGL() {
         //读取着色器源码
-        val fragment_shader_source = ReadResouceText.readResourceText(context, R.raw.fragment_shader);
+        val fragment_shader_source = ReadResouceText.readResourceText(context, R.raw.fragment_shader0);
         val vertex_shader_source = ReadResouceText.readResourceText(context, R.raw.vertex_shader);
 
         //编译着色器源码
