@@ -9,7 +9,7 @@ import javax.microedition.khronos.opengles.GL10
 class CreateBodyRendererImpl(val createBodyActivity: CreateBodyActivity) :
     GLSurfaceView.Renderer {
 
-        var circle: IPart = Circle(Circle.Point(1f, 1f), 10f, 2, createBodyActivity)
+        var circle: IPart = Circle( createBodyActivity)
 //    var circle: IPart = Rectangle(createBodyActivity)
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         //清空屏幕

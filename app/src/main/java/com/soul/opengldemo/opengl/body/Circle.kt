@@ -21,14 +21,6 @@ class Circle : IPart {
 
     private var context: Context
 
-    // 圆心
-    private var center: Point = Point(0f, 0f)
-
-    // 半径
-    private var radius: Float = 0f
-
-    // 顶点数量
-    private var vertexCount: Int = 0
 
     // 顶点坐标
     private var vertexArray: FloatArray = floatArrayOf()
@@ -61,20 +53,8 @@ class Circle : IPart {
 
     )
 
-    constructor(center: Point, radius: Float, vertexCount: Int, context: Context) {
-        this.center = center
-        this.radius = radius
-        this.vertexCount = vertexCount
+    constructor(context: Context) {
         this.context = context
-//        vertexArray = FloatArray(vertexCount * 2)
-//        // 计算每个顶点的坐标
-//        for (i in 0 until vertexCount) {
-//            val x = (center.x + radius * Math.cos(2 * Math.PI * i / vertexCount)).toFloat()
-//            val y = (center.y + radius * Math.sin(2 * Math.PI * i / vertexCount)).toFloat()
-//            vertexArray[i * 2] = x
-//            vertexArray[i * 2 + 1] = y
-//        }
-
         vertexArray = getVertexData()
 
 
@@ -127,7 +107,7 @@ class Circle : IPart {
      */
     override fun init() {
         //1、初始化openGl 数据容器
-        val floatBuffer = OpenGlHelp.initOpenGlData(tableVertices, BYTES_PER_FLOAT)
+        val floatBuffer = OpenGlHelp.initOpenGlData(vertexArray, BYTES_PER_FLOAT)
         //2、加载着色器资源
         val vertexShader = OpenGlHelp.readResourceShader(context, R.raw.vertext_shaer_circle)//顶点着色器
         val fragmentShader = OpenGlHelp.readResourceShader(context, R.raw.fragment_shader_circle)//片段着色器
@@ -180,14 +160,9 @@ class Circle : IPart {
         GLES20.glUniform4f(a_color, 1.0f, 1.0f, 1.0f, 1f)
         //设置矩阵数据
         GLES20.glUniformMatrix4fv(u_matrix, 1, false, mProjectionMatrix, 0)
-        
+
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, count + 2)
 
     }
 
-
-    /**
-     * 点
-     */
-    class Point(var x: Float, var y: Float)
 }
