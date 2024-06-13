@@ -2,9 +2,12 @@ package com.soul.opengldemo.opengl
 
 import android.content.Context
 import android.opengl.GLSurfaceView
+import android.view.MotionEvent
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import com.soul.lib.utils.LogUtil
+import com.soul.opengldemo.opengl.body.CustomGLSurfaceView
 
 /**
  * Description: openGLView
@@ -30,3 +33,4 @@ fun OpenGLView(context: Context, renderer: GLSurfaceView.Renderer) {
         }
     )
 }
+

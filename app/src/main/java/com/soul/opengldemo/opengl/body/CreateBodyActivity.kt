@@ -18,6 +18,6 @@ class CreateBodyActivity : ComponentActivity() {
         override fun onCreate(savedInstanceState: Bundle?) {
             super.onCreate(savedInstanceState)
             enableEdgeToEdge()
-            setContent { OpenGLView(context = this, CreateBodyRendererImpl(this)) }
+            setContent { OpenGLView(CreateBodyRendererImpl(this)) }
         }
 }

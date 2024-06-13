@@ -9,21 +9,28 @@ import javax.microedition.khronos.opengles.GL10
 class CreateBodyRendererImpl(val createBodyActivity: CreateBodyActivity) :
     GLSurfaceView.Renderer {
 
-        var circle: IPart = Circle( createBodyActivity)
-//    var circle: IPart = Rectangle(createBodyActivity)
+    var circle: IPart = Circle(createBodyActivity)
+    var cylinder: Cylinder? = null
+
+    //    var circle: IPart = Rectangle(createBodyActivity)
     override fun onSurfaceCreated(gl: GL10?, config: EGLConfig?) {
         //清空屏幕
         GLES20.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-        circle.init()
+//        circle.init()
+        cylinder = Cylinder.instance
+        cylinder?.init(createBodyActivity)
+
     }
 
     override fun onSurfaceChanged(gl: GL10?, width: Int, height: Int) {
-        circle.measure(width, height)
+//        circle.measure(width, height)
+        cylinder?.projectionMatrix(width, height)
     }
 
     override fun onDrawFrame(gl: GL10?) {
         GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
-        circle.draw()
+//        circle.draw()
+        cylinder?.draw()
     }
 
 }

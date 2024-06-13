@@ -74,6 +74,7 @@ class Circle : IPart {
     private var count = 50
 
     val POSITION_COMPONENT_COUNT = 2
+    
     val BYTES_PER_FLOAT = 4
 
 
@@ -160,7 +161,7 @@ class Circle : IPart {
         GLES20.glUniform4f(a_color, 1.0f, 1.0f, 1.0f, 1f)
         //设置矩阵数据
         GLES20.glUniformMatrix4fv(u_matrix, 1, false, mProjectionMatrix, 0)
-
+        //画三角形
         GLES20.glDrawArrays(GLES20.GL_TRIANGLE_FAN, 0, count + 2)
 
     }
