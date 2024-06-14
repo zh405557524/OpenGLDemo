@@ -128,6 +128,7 @@ class OpenGlHelp {
         /**
          * 5、验证openl程序对象
          * @param program 程序对象
+         * @return true 验证成功;false 验证失败
          */
         fun validateProgram(program: Int): Boolean {
             GLES20.glValidateProgram(program)
@@ -159,12 +160,24 @@ class OpenGlHelp {
 
         /**
          * 8、绑定顶点属性
+         *@param a_position 这个就是shader属性
+         * @param POSITION_COMPONENT_COUNT 每个顶点有多少分量，我们这个只有来个分量
+         * @param STRIDE 一个数组有多个属性才有意义，我们只有一个属性，传0
+         * @param verticeData opengl从哪里读取数据
          */
         fun bindVertexAttribPointer(a_position: Int,
                                     POSITION_COMPONENT_COUNT: Int,
                                     STRIDE: Int,
                                     verticeData: FloatBuffer) {
             verticeData.position(0)
+            /**
+             * 第一个参数，这个就是shader属性
+             * 第二个参数，每个顶点有多少分量，我们这个只有来个分量
+             * 第三个参数，数据类型
+             * 第四个参数，只有整形才有意义，忽略
+             * 第5个参数，一个数组有多个属性才有意义，我们只有一个属性，传0
+             * 第六个参数，opengl从哪里读取数据
+             */
             GLES20.glVertexAttribPointer(
                 a_position, POSITION_COMPONENT_COUNT, GLES20.GL_FLOAT,
                 false, STRIDE, verticeData

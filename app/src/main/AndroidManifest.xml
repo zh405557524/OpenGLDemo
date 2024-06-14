@@ -43,6 +43,10 @@
         <activity
             android:name=".opengl.body.CreateBodyActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".opengl.arrows.DirectionArrowActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

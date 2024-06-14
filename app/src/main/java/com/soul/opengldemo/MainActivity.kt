@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.soul.lib.utils.LogUtil
+import com.soul.opengldemo.opengl.arrows.DirectionArrowActivity
 import com.soul.opengldemo.opengl.body.CreateBodyActivity
 import com.soul.opengldemo.opengl.growthcolor.GLGrowthColorActivity
 import com.soul.opengldemo.opengl.introduction3d.Introduction3dActivity
@@ -70,6 +71,10 @@ class MainActivity : ComponentActivity() {
                 ButtonWithAction("OpenGL 构造物") {
                     LogUtil.i(TAG, "按钮 6")
                     startActivity(Intent(this@MainActivity, CreateBodyActivity::class.java))
+                }
+                ButtonWithAction("OpenGL 箭头") {
+                    LogUtil.i(TAG, "按钮 6")
+                    startActivity(Intent(this@MainActivity, DirectionArrowActivity::class.java))
                 }
             }
         }

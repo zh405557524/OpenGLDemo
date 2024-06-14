@@ -16,7 +16,7 @@ import kotlin.math.sin
 
 
 /**
- * Description: TODO
+ * Description: 圆柱体绘制
  * Author: 祝明
  * CreateDate: 2024/6/13 22:20
  * UpdateUser:
