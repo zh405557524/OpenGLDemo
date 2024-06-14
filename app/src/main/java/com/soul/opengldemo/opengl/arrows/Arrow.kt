@@ -37,13 +37,12 @@ class Arrow(val context: Context) : IPart {
     )
 
 
-
     val BYTES_PER_FLOAT = 4
 
+    //属性数组
+    val attribute = IntArray(3)
+
     private val mProjectionMatrix = FloatArray(16)
-    var a_Position = 0
-    var u_Color = 0
-    var u_Matrix = 0
 
     init {
 
@@ -53,30 +52,16 @@ class Arrow(val context: Context) : IPart {
     override fun init() {
         //1、初始化顶点数据
         val verticeData = OpenGlHelp.initOpenGlData(arrowArray, BYTES_PER_FLOAT)
-        //2、加载着色器
-        val vertextShaer = OpenGlHelp.readResourceShader(context, R.raw.vertext_shaer_circle)
-        val fragmentShaer = OpenGlHelp.readResourceShader(context, R.raw.fragment_shader_circle)
-        //3、编译着色器
-        val vertextShaerId = OpenGlHelp.compileShader(GLES20.GL_VERTEX_SHADER, vertextShaer)
-        val fragmentShaerID = OpenGlHelp.compileShader(GLES20.GL_FRAGMENT_SHADER, fragmentShaer)
-        //4、链接着色器
-        val linkProgram = OpenGlHelp.linkProgram(vertextShaerId, fragmentShaerID)
-        //5、验证程序
-        val validateProgram = OpenGlHelp.validateProgram(linkProgram)
-        if (!validateProgram) {
-            LogUtil.i(TAG, "openGl 验证程序失败 请检查")
-            return
-        }
-        //6、使用程序
-        OpenGlHelp.useProgram(linkProgram)
+        val createProgram = OpenGlHelp.createProgram(context, R.raw.vertext_shaer_circle, R.raw.fragment_shader_circle)
+        if (createProgram == 0) return
 
         //获取指定uniform的位置，并保存在返回值u_color变量中，方便之后使用
-        a_Position = OpenGlHelp.getAttribLocation(linkProgram, "a_Position")
-        u_Color = OpenGlHelp.getUniformLocation(linkProgram, "u_Color")
-        u_Matrix = OpenGlHelp.getUniformLocation(linkProgram, "u_Matrix")
+        attribute[0] = OpenGlHelp.getAttribLocation(createProgram, "a_Position")
+        attribute[1] = OpenGlHelp.getUniformLocation(createProgram, "u_Color")
+        attribute[2] = OpenGlHelp.getUniformLocation(createProgram, "u_Matrix")
 
         //绑定属性
-        OpenGlHelp.bindVertexAttribPointer(a_Position, 2, 0, verticeData)
+        OpenGlHelp.bindVertexAttribPointer(attribute[0], 2, 0, verticeData)
         LogUtil.i(TAG, "openGl init 成功")
     }
 
@@ -105,16 +90,16 @@ class Arrow(val context: Context) : IPart {
         LogUtil.i(TAG, "drawOpenGl")
         //更新着色器u_color的值，后面四个参数分别为，红，绿，蓝，透明度
         //指定着色器u_color的颜色为白色
-        GLES20.glUniform4f(u_Color, 0.0f, 1.0f, 1.0f, 1.0f)
+        GLES20.glUniform4f(attribute[1], 0.0f, 1.0f, 1.0f, 1.0f)
 
         //设置矩阵数据
-        GLES20.glUniformMatrix4fv(u_Matrix, 1, false, mProjectionMatrix, 0)
+        GLES20.glUniformMatrix4fv(attribute[2], 1, false, mProjectionMatrix, 0)
         /**
          * 第一个参数：绘制绘制三角形
          * 第二个参数：从顶点数组0索引开始读
          * 第三个参数：读入6个顶点
          */
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3)
+//        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 9)
 
     }

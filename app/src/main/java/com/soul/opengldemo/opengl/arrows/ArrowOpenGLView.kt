@@ -1,9 +1,13 @@
 package com.soul.opengldemo.opengl.arrows
 
 import android.opengl.GLSurfaceView
+import android.view.MotionEvent
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.viewinterop.AndroidView
 import com.soul.lib.utils.LogUtil
+import com.soul.opengldemo.opengl.body.CreateBodyRendererImpl
+import com.soul.opengldemo.opengl.body.CustomGLSurfaceView
+import com.soul.opengldemo.opengl.body.Cylinder
 
 /**
  * Description: 方向箭OpenGlView
@@ -17,10 +21,12 @@ import com.soul.lib.utils.LogUtil
 fun ArrowOpenGLView(renderer: DirectionArrowRendererImpl) {
     AndroidView(
         factory = { ctx ->
-            GLSurfaceView(ctx).apply {
+            CustomGLSurfaceView(ctx).apply {
                 setEGLContextClientVersion(2) // 使用 OpenGL ES 2.0
                 setRenderer(renderer)
                 renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
+//                onTouchEventListener = { event: MotionEvent -> handleTouchEvent(event, renderer) } // 设置触摸事件监听器
+
             }
         },
         update = { view ->
@@ -29,4 +35,46 @@ fun ArrowOpenGLView(renderer: DirectionArrowRendererImpl) {
         }
     )
 
+}
+
+
+private var mPreviousX = 0f
+private var mPreviousY = 0f
+
+fun handleTouchEvent(event: MotionEvent, renderer: MyGLRenderer): Boolean {
+    val x = event.x //当前的触控位置X坐标
+    val y = event.y //当前的触控位置X坐标
+    when (event.action) {
+        MotionEvent.ACTION_DOWN -> {
+            println("Touch Down")
+        }
+
+        MotionEvent.ACTION_MOVE -> {
+            println("Touch Move")
+
+            val dx = x - mPreviousX
+            val dy = y - mPreviousY
+
+            if (dx > 0) {
+             renderer.rotate(-dx, 1F, 0F, 0F)
+//                            Cylinder.getInstance().translate(0.1f, 0, 0);
+            } else {
+             renderer.rotate(dx, 1F, 0F, 0F)
+//                            Cylinder.getInstance().translate(-0.1f, 0, 0);
+            }
+
+            if (dy > 0) {
+             renderer.rotate(-dy, 0F, 0F, 1F)
+            } else {
+             renderer.rotate(dy, 0F, 0F, 1F)
+            }
+        }
+
+        MotionEvent.ACTION_UP -> {
+            println("Touch Up")
+        }
+    }
+    mPreviousX = x;
+    mPreviousY = y;
+    return true
 }

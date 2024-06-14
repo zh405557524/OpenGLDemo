@@ -194,5 +194,35 @@ class OpenGlHelp {
             return GLES20.glGetUniformLocation(program, s)
         }
 
+        /**
+         * 创建程序
+         * @param context 上下文
+         * @param vertextShaderId 顶点着色器id
+         * @param fragmentShaderId 片段着色器id
+         * @return true 创建成功;false 创建失败
+         */
+        fun createProgram(context: Context, vertextShaderResId: Int, fragmentShaderResId: Int): Int {
+            val vertextShaderId = loadShader(context, GLES20.GL_VERTEX_SHADER, vertextShaderResId)
+            val fragmentShaderId = loadShader(context, GLES20.GL_FRAGMENT_SHADER, fragmentShaderResId)
+            val linkProgram = linkProgram(vertextShaderId, fragmentShaderId)
+            val validateProgram = validateProgram(linkProgram)
+            if (!validateProgram) {
+                LogUtil.i("OpenHelp", "openGl 验证程序失败 请检查")
+                return 0
+            }
+            //6、使用程序
+            OpenGlHelp.useProgram(linkProgram)
+            return linkProgram
+        }
+
+
+        private fun loadShader(context: Context, type: Int, redId: Int): Int {
+            return GLES20.glCreateShader(type).also { shader ->
+                val shaderCode = readResourceShader(context, redId)
+                GLES20.glShaderSource(shader, shaderCode)
+                GLES20.glCompileShader(shader)
+            }
+        }
+
     }
 }
