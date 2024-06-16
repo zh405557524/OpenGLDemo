@@ -24,8 +24,8 @@ fun ArrowOpenGLView(renderer: DirectionArrowRendererImpl) {
             CustomGLSurfaceView(ctx).apply {
                 setEGLContextClientVersion(2) // 使用 OpenGL ES 2.0
                 setRenderer(renderer)
-                renderMode = GLSurfaceView.RENDERMODE_WHEN_DIRTY
-//                onTouchEventListener = { event: MotionEvent -> handleTouchEvent(event, renderer) } // 设置触摸事件监听器
+                renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY //三种模式，手动模式，RENDERMODE_CONTINUOUSLY 自动模式
+                onTouchEventListener = { event: MotionEvent -> handleTouchEvent(event, renderer) } // 设置触摸事件监听器
 
             }
         },
@@ -41,7 +41,7 @@ fun ArrowOpenGLView(renderer: DirectionArrowRendererImpl) {
 private var mPreviousX = 0f
 private var mPreviousY = 0f
 
-fun handleTouchEvent(event: MotionEvent, renderer: MyGLRenderer): Boolean {
+fun handleTouchEvent(event: MotionEvent, renderer: DirectionArrowRendererImpl): Boolean {
     val x = event.x //当前的触控位置X坐标
     val y = event.y //当前的触控位置X坐标
     when (event.action) {
@@ -56,17 +56,17 @@ fun handleTouchEvent(event: MotionEvent, renderer: MyGLRenderer): Boolean {
             val dy = y - mPreviousY
 
             if (dx > 0) {
-             renderer.rotate(-dx, 1F, 0F, 0F)
+                renderer.rotate(-dx, 1F, 0F, 0F)
 //                            Cylinder.getInstance().translate(0.1f, 0, 0);
             } else {
-             renderer.rotate(dx, 1F, 0F, 0F)
+                renderer.rotate(dx, 1F, 0F, 0F)
 //                            Cylinder.getInstance().translate(-0.1f, 0, 0);
             }
 
             if (dy > 0) {
-             renderer.rotate(-dy, 0F, 0F, 1F)
+                renderer.rotate(-dy, 0F, 0F, 1F)
             } else {
-             renderer.rotate(dy, 0F, 0F, 1F)
+                renderer.rotate(dy, 0F, 0F, 1F)
             }
         }
 

@@ -31,4 +31,8 @@ class DirectionArrowRendererImpl(context: Context) : Renderer {
         arrow.draw()
     }
 
+    fun rotate(fl: Float, fl1: Float, fl2: Float, fl3: Float) {
+        arrow.rotate(fl,fl1,fl2,fl3)
+    }
+
 }

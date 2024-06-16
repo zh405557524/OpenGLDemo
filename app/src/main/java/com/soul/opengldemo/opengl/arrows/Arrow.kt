@@ -44,12 +44,23 @@ class Arrow(val context: Context) : IPart {
 
     private val mProjectionMatrix = FloatArray(16)
 
-    init {
+    /**
+     * 模型矩阵
+     */
+    private val mModelMatrix = FloatArray(16)
 
+    /**
+     * 混合矩阵
+     */
+    val mixMatrix = FloatArray(16)
+
+    init {
 
     }
 
     override fun init() {
+        //初始化模型矩阵
+        Matrix.setIdentityM(mModelMatrix, 0)
         //1、初始化顶点数据
         val verticeData = OpenGlHelp.initOpenGlData(arrowArray, BYTES_PER_FLOAT)
         val createProgram = OpenGlHelp.createProgram(context, R.raw.vertext_shaer_circle, R.raw.fragment_shader_circle)
@@ -84,6 +95,9 @@ class Arrow(val context: Context) : IPart {
         )
 
         LogUtil.i(TAG, "openGl 测量成功")
+
+        //矩阵相乘，主要是融合视图矩阵与模型矩阵
+        Matrix.multiplyMM(mixMatrix, 0, mProjectionMatrix, 0, mModelMatrix, 0)
     }
 
     override fun draw() {
@@ -93,7 +107,7 @@ class Arrow(val context: Context) : IPart {
         GLES20.glUniform4f(attribute[1], 0.0f, 1.0f, 1.0f, 1.0f)
 
         //设置矩阵数据
-        GLES20.glUniformMatrix4fv(attribute[2], 1, false, mProjectionMatrix, 0)
+        GLES20.glUniformMatrix4fv(attribute[2], 1, false, mixMatrix, 0)
         /**
          * 第一个参数：绘制绘制三角形
          * 第二个参数：从顶点数组0索引开始读
@@ -102,6 +116,16 @@ class Arrow(val context: Context) : IPart {
 //        GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 3)
         GLES20.glDrawArrays(GLES20.GL_TRIANGLES, 0, 9)
 
+
+//        GLES20.glDisableVertexAttribArray(0)
+    }
+
+
+    // 旋转变换
+    fun rotate(angle: Float, x: Float, y: Float, z: Float) {
+        Matrix.rotateM(mModelMatrix, 0, angle, x, y, z)
+        //矩阵相乘，主要是融合视图矩阵与模型矩阵
+        Matrix.multiplyMM(mixMatrix, 0, mProjectionMatrix, 0, mModelMatrix, 0)
     }
 
 }
