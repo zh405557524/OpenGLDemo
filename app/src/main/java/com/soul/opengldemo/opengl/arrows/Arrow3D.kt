@@ -38,7 +38,7 @@ class Arrow3D(val context: Context) : IPart {
     override fun init() {
         Matrix.setIdentityM(modelMatrix, 0)
         //1、加载模式数据
-        val (f, i) = OpenGlHelp.load3DModel(context, "PPTStepModel.obj")
+        val (f, i) = OpenGlHelp.load3DModel(context, "NewStepModel.obj")
         vertices = f
         indices = i
 
