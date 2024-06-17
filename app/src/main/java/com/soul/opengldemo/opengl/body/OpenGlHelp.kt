@@ -4,12 +4,15 @@ import android.content.Context
 import android.opengl.GLES20
 import android.util.Log
 import com.soul.lib.utils.LogUtil
+import com.soul.opengldemo.opengl.arrows.obj.loadOBJFile
+import com.soul.opengldemo.opengl.arrows.obj.parseOBJ
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
 import java.nio.FloatBuffer
+import java.nio.IntBuffer
 
 /**
  * Description: openGL帮助类
@@ -25,12 +28,37 @@ class OpenGlHelp {
          * 1、初始化openGl 数据容器
          * @param tableVertices 数据
          */
+        @Deprecated("使用createBuffer(data: FloatArray)代替")
         fun initOpenGlData(tableVertices: FloatArray, BYTES_PER_FLOAT: Int): FloatBuffer {
             return ByteBuffer.allocateDirect(tableVertices.size * BYTES_PER_FLOAT)//分配内存空间
                 .order(ByteOrder.nativeOrder())//告诉缓冲区按照本子字节组织内容
                 .asFloatBuffer()//转换为浮点缓冲区
                 .put(tableVertices)//把数据复制到缓冲区
                 .apply { position(0) }//把数据下标移动到指定位置
+        }
+
+
+        /**
+         * 1、初始化openGl 数据容器
+         * @param data 数据
+         */
+        fun createBuffer(data: FloatArray): FloatBuffer {
+            val buffer = ByteBuffer.allocateDirect(data.size * 4)
+                .order(ByteOrder.nativeOrder())
+                .asFloatBuffer()
+            buffer.put(data)
+            buffer.position(0)
+            return buffer
+
+        }
+
+        fun createBuffer(data: IntArray): IntBuffer {
+            val buffer = ByteBuffer.allocateDirect(data.size * 4)
+                .order(ByteOrder.nativeOrder())
+                .asIntBuffer()
+            buffer.put(data)
+            buffer.position(0)
+            return buffer
         }
 
 
@@ -194,6 +222,9 @@ class OpenGlHelp {
             return GLES20.glGetUniformLocation(program, s)
         }
 
+
+        /**------------------------------创建程序  start--------------------------------*/
+
         /**
          * 创建程序
          * @param context 上下文
@@ -223,6 +254,20 @@ class OpenGlHelp {
                 GLES20.glCompileShader(shader)
             }
         }
+
+
+        /**------------------------------创建程序  end--------------------------------*/
+
+
+        /**------------------------------加载3d 模型 start--------------------------------*/
+
+        fun load3DModel(context: Context, fileName: String): Pair<FloatArray, IntArray> {
+            val fileContent = loadOBJFile(context, fileName)
+            return parseOBJ(fileContent)
+        }
+
+        /**------------------------------加载3d 模型 end--------------------------------*/
+
 
     }
 }

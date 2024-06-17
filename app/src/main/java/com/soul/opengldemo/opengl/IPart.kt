@@ -1,5 +1,7 @@
 package com.soul.opengldemo.opengl
 
+import android.content.Context
+
 /**
  * Description: 图形零件
  * Author: 祝明
