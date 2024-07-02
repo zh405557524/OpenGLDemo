@@ -25,7 +25,7 @@ fun ArrowOpenGLView(renderer: DirectionArrowRendererImpl) {
                 setEGLContextClientVersion(2) // 使用 OpenGL ES 2.0
                 setRenderer(renderer)
                 renderMode = GLSurfaceView.RENDERMODE_CONTINUOUSLY //三种模式，手动模式，RENDERMODE_CONTINUOUSLY 自动模式
-                onTouchEventListener = { event: MotionEvent -> handleTouchEvent(event, renderer) } // 设置触摸事件监听器
+//                onTouchEventListener = { event: MotionEvent -> handleTouchEvent(event, renderer) } // 设置触摸事件监听器
 
             }
         },

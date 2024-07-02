@@ -2,7 +2,12 @@ package com.soul.opengldemo.opengl.arrows
 
 import android.content.Context
 import android.opengl.GLES20
+import android.opengl.GLES20.GL_ARRAY_BUFFER
+import android.opengl.GLES20.GL_ELEMENT_ARRAY_BUFFER
 import android.opengl.Matrix
+import android.util.Log
+import androidx.core.content.ContextCompat
+import com.soul.lib.utils.LogUtil
 import com.soul.opengldemo.R
 import com.soul.opengldemo.opengl.IPart
 import com.soul.opengldemo.opengl.body.OpenGlHelp
@@ -28,35 +33,49 @@ class Arrow3D(val context: Context) : IPart {
     //投影矩阵
     val projectionMatrix = FloatArray(16)
 
+    //视图矩阵
+    val viewMatrix = FloatArray(16)
+
     //混合矩阵
     val mixMatrix = FloatArray(16)
 
-    private lateinit var vertices: FloatArray
-
-    private lateinit var indices: IntArray
-
-    private val attribute = IntArray(3)
+    private val attribute = IntArray(16)
 
     override fun init() {
         Matrix.setIdentityM(modelMatrix, 0)
-        //1、加载模式数据
-        val (f, i) = OpenGlHelp.load3DModel(context, "NewStepModel.obj")
-        vertices = f
-        indices = i
+        Matrix.setIdentityM(projectionMatrix, 0)
+        Matrix.setIdentityM(viewMatrix, 0)
+
+
+//        // 旋转参数
+//        val angle = 45f // 旋转45度
+//        val x = 1f      // 绕x轴旋转
+//        val y = 0f      // 绕y轴旋转
+//        val z = 0f      // 绕z轴旋转
+//
+//// 应用旋转
+//        Matrix.rotateM(modelMatrix, 0, angle, x, y, z)
+//
+
 
         //2、初始化shader
-        val createProgram = OpenGlHelp.createProgram(context, R.raw.vertext_shaer_circle, R.raw.fragment_shader_circle)
+        val createProgram =
+            OpenGlHelp.createProgram(context, R.raw.vertex_shader_project, R.raw.fragment_shader_project)
         if (createProgram == 0) {
             return
         }
         attribute[0] = OpenGlHelp.getAttribLocation(createProgram, "a_Position")
-        attribute[1] = OpenGlHelp.getUniformLocation(createProgram, "u_Color")
-        attribute[2] = OpenGlHelp.getUniformLocation(createProgram, "u_Matrix")
-//        setupBuffers()
+        attribute[1] = OpenGlHelp.getUniformLocation(createProgram, "a_normal")
+        attribute[2] = OpenGlHelp.getUniformLocation(createProgram, "a_texCoord0")
+
+        attribute[3] = OpenGlHelp.getUniformLocation(createProgram, "modelMatrix")
+        attribute[4] = OpenGlHelp.getUniformLocation(createProgram, "modelviewMatrix")
+        attribute[5] = OpenGlHelp.getUniformLocation(createProgram, "mvpMatrix")
+        attribute[6] = OpenGlHelp.getUniformLocation(createProgram, "light_positionEye")
+        attribute[7] = OpenGlHelp.getUniformLocation(createProgram, "light_diffuseColor")
+        attribute[8] = OpenGlHelp.getUniformLocation(createProgram, "unit2d")
         setupBuffers1()
     }
-
-
 
 
     override fun measure(width: Int, height: Int) {
@@ -78,78 +97,99 @@ class Arrow3D(val context: Context) : IPart {
             -1f, 1f
         )
 
+//        val aspect = width.toFloat() / height
+//
+//        // 尼玛,f0和f完全不一样，坑爹的玩意
+//        Matrix.perspectiveM(this.i, 0, 65.0f, aspect, 0.1f, 200.0f)
+    }
+
+
+    fun setColor(res: Int) {
+        val colorInt = ContextCompat.getColor(context, res)
+        val alpha = (colorInt shr 24) and 0xff  // 右移24位，与0xff进行AND操作获取Alpha
+        val red = (colorInt shr 16) and 0xff  // 右移16位获取Red
+        val green = (colorInt shr 8) and 0xff  // 右移8位获取Green
+        val blue = colorInt and 0xff  // 直接与0xff获取Blue
+        val a = alpha / 255.0f
+        val r = red / 255.0f
+        val g = green / 255.0f
+        val b = blue / 255.0f
+        colorArray[0] = r
+        colorArray[1] = g
+        colorArray[2] = b
+        colorArray[3] = a
+    }
+
+    val colorArray = floatArrayOf(1.0f, 0.0f, 0.0f, 1.0f)
+
+    fun drawPrepare() {
+        Matrix.setIdentityM(modelMatrix, 0)
+        // 缩放参数
+        val sx = 0.3f      // 缩小到原来的0.5倍
+        val sy = 0.3f      // 缩小到原来的0.5倍
+        val sz = 0.3f      // 缩小到原来的0.5倍
+// 应用缩放
+        Matrix.scaleM(modelMatrix, 0, sx, sy, sz)
 
     }
 
     override fun draw() {
 
-        Matrix.multiplyMM(mixMatrix, 0, projectionMatrix, 0, modelMatrix, 0)
+        val viewModelMatrix = FloatArray(16)
+        Matrix.multiplyMM(viewModelMatrix, 0, viewMatrix, 0, modelMatrix, 0)
+        Matrix.multiplyMM(mixMatrix, 0, projectionMatrix, 0, viewModelMatrix, 0)
 
-        GLES20.glUniform4f(attribute[1], 1.0f, 0.0f, 0.0f, 1.0f)
+        GLES20.glUniform4f(attribute[1], colorArray[0], colorArray[1], colorArray[2], colorArray[3])
         GLES20.glUniformMatrix4fv(attribute[2], 1, false, mixMatrix, 0)
-//
-//
-//        GLES20.glEnableVertexAttribArray(attribute[0])
-//
-//        //设置顶点数据
-//        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
-//        GLES20.glVertexAttribPointer(attribute[0], 3, GLES20.GL_FLOAT, false, 12, 0)
-//        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER,0)
-//
-//        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, eboId)
-//        GLES20.glDrawElements(GLES20.GL_TRIANGLES, indexCount, GLES20.GL_UNSIGNED_INT, 0)
-//        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, 0)
-//
-//        GLES20.glDisableVertexAttribArray(attribute[0])
-        GLES20.glBindBuffer(34962, this.vboId)
-        GLES20.glVertexAttribPointer(attribute.get(0), 3, 5126, false, 0, this.d)
+
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, this.vboId)
+        GLES20.glVertexAttribPointer(attribute.get(0), 3, GLES20.GL_FLOAT, false, 0, indiceLimit)
 //        GLES20.glVertexAttribPointer(attribute.get(1), 3, 5126, false, 0, this.f)
 //        GLES20.glVertexAttribPointer(attribute.get(2), 2, 5126, false, 0, this.e)
-        GLES20.glBindBuffer(34962, 0)
+        GLES20.glBindBuffer(GL_ARRAY_BUFFER, 0)
         GLES20.glEnableVertexAttribArray(attribute.get(0))
 //        GLES20.glEnableVertexAttribArray(attribute.get(1))
 //        GLES20.glEnableVertexAttribArray(attribute.get(2))
-        GLES20.glBindBuffer(34963, this.eboId)
-        GLES20.glDrawElements(4, this.indexCount, 5125, 0)
-        GLES20.glBindBuffer(34963, 0)
+        GLES20.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.eboId)
+        GLES20.glDrawElements(GLES20.GL_TRIANGLES, this.indexCount, GLES20.GL_UNSIGNED_INT, 0)
+        GLES20.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
         GLES20.glDisableVertexAttribArray(attribute.get(0))
         GLES20.glDisableVertexAttribArray(attribute.get(1))
         GLES20.glDisableVertexAttribArray(attribute.get(2))
 
-
     }
 
-    private var d = 0
-    private var e = 0
-    private var f = 0
+    private var indiceLimit = 0
+    private var verticesLimit = 0
+    private var texCoordsLimt = 0
     private fun setupBuffers1() {
         try {
-            val inputStream: InputStream = context.getAssets().open("NewStepModel.obj")
+            val inputStream: InputStream = context.getAssets().open("PPTStepModel.obj")
             val obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream))
-            val c3 = ObjData.getFaceVertexIndices(obj, 3)
-            val j = ObjData.getVertices(obj)
-            val g = ObjData.getTexCoords(obj, 2)
-            val e = ObjData.getNormals(obj)
-            this.indexCount = c3.limit()
+            val indices = ObjData.getFaceVertexIndices(obj, 3)
+            val vertices = ObjData.getVertices(obj)
+            val texCoords = ObjData.getTexCoords(obj, 2)
+            val normal = ObjData.getNormals(obj)
+            this.indexCount = indices.limit()
             val iArr = IntArray(2)
             GLES20.glGenBuffers(2, iArr, 0)
             this.vboId = iArr[0]
             this.eboId = iArr[1]
-            this.d = 0
-            val limit = (j.limit() * 4) + 0
-            this.e = limit
-            val limit2 = limit + (g.limit() * 4)
-            this.f = limit2
-            val limit3 = e.limit()
-            GLES20.glBindBuffer(34962, this.vboId)
-            GLES20.glBufferData(34962, limit2 + (limit3 * 4), null, 35044)
-            GLES20.glBufferSubData(34962, this.d, j.limit() * 4, j)
-            GLES20.glBufferSubData(34962, this.e, g.limit() * 4, g)
-            GLES20.glBufferSubData(34962, this.f, e.limit() * 4, e)
-            GLES20.glBindBuffer(34962, 0)
-            GLES20.glBindBuffer(34963, this.eboId)
-            GLES20.glBufferData(34963, this.indexCount * 4, c3, 35044)
-            GLES20.glBindBuffer(34963, 0)
+            this.indiceLimit = 0
+            val limit = (vertices.limit() * 4) + 0
+            this.verticesLimit = limit
+            val limit2 = limit + (texCoords.limit() * 4)
+            this.texCoordsLimt = limit2
+            val limit3 = normal.limit()
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, this.vboId)
+            GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, limit2 + (limit3 * 4), null, 35044)
+            GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, this.indiceLimit, vertices.limit() * 4, vertices)
+            GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, this.verticesLimit, texCoords.limit() * 4, texCoords)
+            GLES20.glBufferSubData(GLES20.GL_ARRAY_BUFFER, this.texCoordsLimt, normal.limit() * 4, normal)
+            GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, 0)
+            GLES20.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, this.eboId)
+            GLES20.glBufferData(GL_ELEMENT_ARRAY_BUFFER, this.indexCount * 4, indices, 35044)
+            GLES20.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0)
         } catch (e2: IOException) {
             e2.printStackTrace()
         }
@@ -160,31 +200,48 @@ class Arrow3D(val context: Context) : IPart {
     var eboId: Int = 0
     var indexCount = 0
 
-
-    private fun setupBuffers() {
-        val vertexBuffer = OpenGlHelp.createBuffer(vertices)
-        val indicesBuffer = OpenGlHelp.createBuffer(indices)
-
-        val buffer = IntArray(2)
-        GLES20.glGenBuffers(2, buffer, 0)
-        vboId = buffer[0]
-        eboId = buffer[1]
-
-        //数据绑定中 GLES20.GL_ARRAY_BUFFER 该缓冲区将被用作存储顶点数组的数据
-        GLES20.glBindBuffer(GLES20.GL_ARRAY_BUFFER, vboId)
-        GLES20.glBufferData(GLES20.GL_ARRAY_BUFFER, vertices.size * 4, vertexBuffer, GLES20.GL_STATIC_DRAW)
-
-        //数据绑定中  GLES20.GL_ELEMENT_ARRAY_BUFFER 用于指定缓冲区类型的目标，专门用于存储索引数组
-        GLES20.glBindBuffer(GLES20.GL_ELEMENT_ARRAY_BUFFER, eboId)
-        GLES20.glBufferData(GLES20.GL_ELEMENT_ARRAY_BUFFER, indices.size * 4, indicesBuffer, GLES20.GL_STATIC_DRAW)
-
-        indexCount = indices.size
-    }
-
     fun rotate(angle: Float, x: Float, y: Float, z: Float) {
         Matrix.rotateM(modelMatrix, 0, angle, x, y, z)
         //矩阵相乘，主要是融合视图矩阵与模型矩阵
         Matrix.multiplyMM(mixMatrix, 0, projectionMatrix, 0, modelMatrix, 0)
     }
 
+
+    fun translate(x: Float, y: Float, z: Float) //设置沿xyz轴移动
+    {
+        Matrix.translateM(modelMatrix, 0, x, y, z)
+    }
+
+
+    //缩放变换
+    fun scale(x: Float, y: Float, z: Float) {
+        Matrix.scaleM(modelMatrix, 0, x, y, z)
+        Matrix.multiplyMM(mixMatrix, 0, projectionMatrix, 0, modelMatrix, 0)
+    }
+
+
+    private var lastAngleX: Float = 0F
+    private var lastAngleY: Float = 0F
+    private var lastAngleZ: Float = 0F
+
+    private var sameCount = 0
+    private var maxCount = 10
+    fun updateCameraRotation(deltaX: Float, deltaY: Float, deltaZ: Float) {
+        // 旋转角度可能需要根据陀螺仪的灵敏度和传感器返回的具体值进行调整
+        val angleX = Math.toDegrees(deltaX.toDouble()).toFloat()
+        val angleY = Math.toDegrees(deltaY.toDouble()).toFloat()
+        val angleZ = Math.toDegrees(deltaZ.toDouble()).toFloat()
+        LogUtil.i("DirectionArrowRendererImpl", "angleX:$angleX angleY:$angleY angleZ:$angleZ")
+        lastAngleX = 0f
+        lastAngleY = 0f
+        lastAngleZ = 0f
+
+        Matrix.rotateM(viewMatrix, 0, angleX / 60, 1f, 0f, 0f)
+        Matrix.rotateM(viewMatrix, 0, angleY / 60, 0f, 1f, 0f)
+        Matrix.rotateM(viewMatrix, 0, angleZ / 60, 0f, 0f, 1f)
+
+    }
+
 }
+
+
